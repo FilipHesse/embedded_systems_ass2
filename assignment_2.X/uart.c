@@ -34,7 +34,7 @@ void uart_config(int uartNumber, int baudRate)
         //      = 115200/baudRate - 1                  => still overflow
         //      = (57600/baudRate)*2- 1                => no overflow
         
-        U1BRG = (57600/baudRate)*2- 1;  // works for standard baud rates 110, 150, 300,1200, 2400, 4800, 9600, 19200, 38400, 57600
+        U1BRG = (57600/baudRate)*2- 1;  // works for standard baud rates 150, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600
         U1MODEbits.UARTEN = 1;  //Enable UART1
         U1STAbits.UTXEN = 1;
         
@@ -47,7 +47,7 @@ void uart_config(int uartNumber, int baudRate)
     
     if (uartNumber == 2)
     {
-        U2BRG = (7372800 / 4) / (16 * baudRate) - 1;
+        U2BRG = (57600/baudRate)*2- 1;
         U2MODEbits.UARTEN = 1;
         U2STAbits.UTXEN = 1;
     }

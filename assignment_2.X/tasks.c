@@ -19,6 +19,8 @@
 #include "uart.h"
 #include "pwm.h"
 
+#define PWM_MAX_VOLTAGE 5.0
+
 void* task1_control(void* params) {
     // Initialize static variables, that will remain their content within this function
     // even after leaving the function and re-entering
@@ -42,17 +44,17 @@ void* task1_control(void* params) {
         }
     }
 
-    // Compute reference voltage
-    float U;
+    // Compute reference PWM_ratio
+    float PWM_ratio;
     if (ref_speed >= 0 && ref_speed <= 1000) {
-        U = ref_speed*5.0 / 1000.0;
+        PWM_ratio = ref_speed/ 1000.0;
     } 
     else { //Out of range: stop motor!
-        U = 0;
+        PWM_ratio = 0;
     }
     
     // Always send reference voltage to motor
-    set_percentage_value_pwm_H2(U/5);   //from volts to percentage, if dutyCycle = 100%*PWM frequency: output = 5V
+    set_percentage_value_pwm_H2(PWM_ratio);   //from volts to percentage, if dutyCycle = 100%*PWM frequency: output = 5V
     return NULL;
 }
 
@@ -80,14 +82,14 @@ void configure_tasks_for_scheduling(SchedInfo * schedInfo) {
     schedInfo++;
     schedInfo->task = &task2_process_sensors;
     schedInfo->params = NULL;
-    schedInfo->n = 0;
+    schedInfo->n = 2;
     schedInfo->N = 200; // each 200th period -> 1Hz
 
     // Configure Info of third task
     schedInfo++;
     schedInfo->task = &task3_blink;
     schedInfo->params = NULL;
-    schedInfo->n = 0;
+    schedInfo->n = 4;
     schedInfo->N = 200; // each 200th period -> 1Hz
 
 }

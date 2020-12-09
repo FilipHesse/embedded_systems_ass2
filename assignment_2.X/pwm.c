@@ -7,6 +7,7 @@
 
 
 #include "xc.h"
+#include "pwm.h"
 
 void setup_pwm_H2()
 {
