@@ -1,0 +1,13 @@
+1
+
+wait 300 ms
+
+"$MCREF,1000*"
+
+wait 300 ms
+
+"$WRONG,333*"
+
+wait 3000 ms
+
+"$MCREF,400*"

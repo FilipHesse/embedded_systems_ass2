@@ -25,11 +25,16 @@ void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(){
 
 void uart_config(int uartNumber, int baudRate)
 {
+    // Configure UART1 for receiving into the ring buffer
     if (uartNumber == 1)
     {
         ring_buffer_init(&uart_ring_buffer); //Initialize ring buffer, size: 128 Bytes (defined in rungbuffer.h)
         
-        U1BRG = (7372800 / 4) / (16 * baudRate) - 1;
+        //U1BRG = (7372800 / 4) / (16 * baudRate) - 1; => overflow
+        //      = 115200/baudRate - 1                  => still overflow
+        //      = (57600/baudRate)*2- 1                => no overflow
+        
+        U1BRG = (57600/baudRate)*2- 1;  // works for standard baud rates 110, 150, 300,1200, 2400, 4800, 9600, 19200, 38400, 57600
         U1MODEbits.UARTEN = 1;  //Enable UART1
         U1STAbits.UTXEN = 1;
         
@@ -39,6 +44,7 @@ void uart_config(int uartNumber, int baudRate)
                                 //internal buffer
     }
     
+    
     if (uartNumber == 2)
     {
         U2BRG = (7372800 / 4) / (16 * baudRate) - 1;
@@ -47,10 +53,17 @@ void uart_config(int uartNumber, int baudRate)
     }
 }
 
-// Getter function for ring buffer struct
-ring_buffer_t* getUARTRingBuffer()
-{
-    return &uart_ring_buffer;
+// Get safely character fromUART buffer
+// if empty, returns 0
+// if character available, then one character will be written into data and return value = 1
+uint8_t getUart1CharFromBuffer(char *data){
+    uint8_t ret;
+    // Deactivate ISR for the one function call to avoid conflicts with ISR:
+    U1MODEbits.UARTEN = 0;
+    ret = ring_buffer_dequeue(&uart_ring_buffer, data);
+    // Activate ISR again
+    U1MODEbits.UARTEN = 1;
+    return ret;    
 }
 
 void uart2TransmitIntAsStr(int intToSend)

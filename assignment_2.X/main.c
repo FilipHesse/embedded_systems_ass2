@@ -11,12 +11,18 @@
 #include "timer.h"
 #include "tasks.h"
 #include "scheduler.h"
+#include "uart.h"
+#include "pwm.h"
 
 
 int main() {
-    //InitDevices();
-    // ...
+    //Setup UART
+    uart_config(1, 9600);
     
+    //SetupPWM
+    setup_pwm_H2();
+    
+    //Setup scheduling
     SchedInfo schedInfo[MAX_TASKS];
     configure_tasks_for_scheduling(&schedInfo[0]);
     

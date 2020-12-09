@@ -7,7 +7,7 @@
 #include "ringbuffer.h"
 
 void uart_config(int uartNumber, int baudRate);
-ring_buffer_t* getUARTRingBuffer();
+uint8_t getUart1CharFromBuffer(char *data);
 void uart2TransmitIntAsStr(int intToSend);
 
 #endif	/* XC_HEADER_TEMPLATE_H */
