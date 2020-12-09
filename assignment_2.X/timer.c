@@ -11,7 +11,6 @@
 #include "timer.h"
 // function to setup a period
 void tmr_setup_period(int timer, int ms){
-    int tmr_setup_period(int timer, int ms){
     uint16_t sys_fy=18432; // system frequency
     float prescaler_ = 29/1000.0*ms; //prescaler frequency to help calculation
     uint8_t prescaler=0; // prescaler to be set
@@ -30,7 +29,7 @@ void tmr_setup_period(int timer, int ms){
         prescaler=3;
         scaler=256;
     }else{
-        return 1;
+        //ERROR
     }
     // Timer setup
     switch(timer){
@@ -47,21 +46,22 @@ void tmr_setup_period(int timer, int ms){
             T2CONbits.TON=1; // activate the caunter
             break;
     }
-    return 0;
-}
 }
 
 // function to wait the timer period
 void tmr_wait_period(int timer){
     // wait for the timer to expire
+    int i = 0;
     switch(timer){
         case 1:
             while(IFS0bits.T1IF != 1){
+                i++;
             }
             IFS0bits.T1IF = 0; // reset the expire flag to 0
             break;
         case 2:
             while(IFS0bits.T2IF != 1){
+                i++;
             }
             IFS0bits.T2IF = 0; // reset the expire flag to 0
             break;

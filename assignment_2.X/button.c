@@ -9,7 +9,6 @@
 #include "xc.h"
 #include "button.h"
 #include "timer.h"
-#include "spi.h"
 
 int buttonS5Pressed;
 int buttonS6Pressed;
