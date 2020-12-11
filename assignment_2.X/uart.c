@@ -1,6 +1,6 @@
 /*
  * File:   uart.c
- * Author: filip
+ * Author: filip,Matteo
  *
  * Created on October 30, 2020, 11:00 PM
  */
@@ -11,7 +11,7 @@
 
 
 //Ring buffer, that contains all the data which has been read
-ring_buffer_t uart_ring_buffer;
+volatile ring_buffer_t uart_ring_buffer;
 
 //Interrupt Service Routine for Receiving from UART1
 void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(){
@@ -78,6 +78,20 @@ void uart2TransmitIntAsStr(int intToSend)
     {
         //Send counter number to UART
         U2TXREG = counterStr[i];
+        i=i+1;
+    }
+}
+
+// function to send a character array over uart2
+void uart2TransmitStr(char * string)
+{
+    
+    // iterate over the characters of the string and send all of them
+    int i = 0;
+    while(string[i] != '\0')
+    {
+        //Send counter number to UART
+        U2TXREG = string[i];
         i=i+1;
     }
 }

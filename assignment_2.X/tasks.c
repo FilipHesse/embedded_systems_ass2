@@ -1,6 +1,6 @@
 /*
  * File:   tasks.c
- * Author: filip
+ * Author: filip, Matteo
  *
  * Created on December 9, 2020, 10:17 AM
  */
@@ -10,6 +10,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "tasks.h"
@@ -59,12 +60,30 @@ void* task1_control(void* params) {
 }
 
 void* task2_process_sensors(void* params) {
-    // do something for TASK 2
+    // If the conversion si done
+    while(ADCON1bits.DONE==0);
+    //Set the flag to 0
+    ADCON1bits.DONE=0;
+    // Read the buffer of the potentiometer
+    int potbits=ADCBUF0;
+    // Converts the reading in volts
+    float potvolts = potbits * 5.0/1024.0;
+    float current = 10.0*(potvolts-3.0);
+    // Read teh buffer of the temperature
+    int tempvolts = ADCBUF1;
+    // Convert the reading in Celsius Degrees
+    float temperature=(tempvolts-0.75)*100.0*25;
+    // Definition of the string
+    char string[16];
+    // Compute the message to send applying the protocol
+    sprintf(string,"$MCFBK,%1.1f,%.1f*",current,temperature);
+    uart2TransmitStr(string); // transmit the message via uart2
     return NULL;
 }
 
 void* task3_blink(void* params) {
-    // do something for TASK 3
+    // Change of LED D3 state  
+    LATBbits.LATB0=!LATBbits.LATB0;
     return NULL;
 }
 
@@ -90,6 +109,6 @@ void configure_tasks_for_scheduling(SchedInfo * schedInfo) {
     schedInfo->task = &task3_blink;
     schedInfo->params = NULL;
     schedInfo->n = 4;
-    schedInfo->N = 200; // each 200th period -> 1Hz
+    schedInfo->N = 100; // each 100th period -> 2Hz
 
 }

@@ -9,6 +9,7 @@
 void uart_config(int uartNumber, int baudRate);
 uint8_t getUart1CharFromBuffer(char *data);
 void uart2TransmitIntAsStr(int intToSend);
+void uart2TransmitStr(char* string);
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 
