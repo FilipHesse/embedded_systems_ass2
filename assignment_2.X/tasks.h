@@ -33,7 +33,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-#define MAX_TASKS 3
+#define MAX_TASKS 4
 
 typedef struct SchedInfo{
     void* (*task)(void*);

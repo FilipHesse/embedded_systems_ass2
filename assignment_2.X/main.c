@@ -39,28 +39,10 @@ int main() {
     
     
     while (1) {
-        // First task: control
+        // Schedule and execute tasks
         scheduler(&schedInfo[0]);
-       
         
-        
-        // Current check, does not necesseraly happen every cycle
-        // but only when the ADC has been completed(It does not have high priority)
-        // If the conversion si done
-        if(ADCON1bits.DONE!=0){
-            //Set the flag to 0
-            ADCON1bits.DONE=0;
-            // Read the buffer of the potentiometer
-            int potbits=ADCBUF0;
-            // Converts the reading in volts
-            float potvolts = potbits * 5.0/1024.0;
-            float current = 10.0*(potvolts-3.0);
-            if(current>15){
-                LATBbits.LATB0=1; // turn on the LED
-            }else{
-                LATBbits.LATB0=0; // turn of the LED
-            }
-        }
+        //wait till end of period
         tmr_wait_period(TIMER1);
     }
 }
