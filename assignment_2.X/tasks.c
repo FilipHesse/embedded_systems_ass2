@@ -67,17 +67,28 @@ void* task2_process_sensors(void* params) {
     // Read the buffer of the potentiometer
     int potbits=ADCBUF0;
     // Converts the reading in volts
-    float potvolts = potbits * 5.0/1024.0;
-    float current = 10.0*(potvolts-3.0);
+    double potvolts = potbits * 5.0/1024.0;
+    double current = 10.0*(potvolts-3.0);
+    int int_c=current;
+    int dec_c=(current-int_c)*10.0;
     // Read teh buffer of the temperature
     int tempvolts = ADCBUF1;
     // Convert the reading in Celsius Degrees
     float temperature=(tempvolts-0.75)*100.0*25;
-    // Definition of the string
-    char string[16];
+    int int_t=temperature;
+    int dec_t=(current-int_t)*10.0;
     // Compute the message to send applying the protocol
-    sprintf(string,"$MCFBK,%1.1f,%.1f*",current,temperature);
-    uart2TransmitStr(string); // transmit the message via uart2
+    // Definition of the string
+    char string0[16]="$MCFBK,";
+    char string1[6];
+    char string2[6];
+    sprintf(string1,"%d.%d",int_c,dec_c);
+    sprintf(string2,"%d.%d",int_t,dec_t);
+    strcat(string0,string1);
+    strcat(string0,",");
+    strcat(string0,string2);
+    strcat(string0,"*");
+    uart2TransmitStr(string1); // transmit the message via uart2
     return NULL;
 }
 
@@ -102,13 +113,13 @@ void configure_tasks_for_scheduling(SchedInfo * schedInfo) {
     schedInfo->task = &task2_process_sensors;
     schedInfo->params = NULL;
     schedInfo->n = 2;
-    schedInfo->N = 200; // each 200th period -> 1Hz
+    schedInfo->N = 1; // each 200th period -> 1Hz
 
     // Configure Info of third task
     schedInfo++;
     schedInfo->task = &task3_blink;
     schedInfo->params = NULL;
     schedInfo->n = 4;
-    schedInfo->N = 100; // each 100th period -> 2Hz
+    schedInfo->N = 1; // each 100th period -> 2Hz
 
 }

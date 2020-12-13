@@ -16,6 +16,7 @@
 #include "adc.h"
 
 
+
 int main() {
     //Setup UART
     uart_config(1, 9600);
